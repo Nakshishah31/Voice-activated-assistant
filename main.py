@@ -45,3 +45,28 @@ def open_application(app_name):
     except Exception as e:
         print(f"Error opening application: {e}")
 
+# Define a function to perform actions based on user input
+def perform_action(command):
+    if open_pattern.search(command):
+        app = command.replace("open", "").strip()
+        open_application(app)
+    elif search_pattern.search(command):
+        query = command.replace("search", "").strip()
+        webbrowser.open_new_tab(f"https://www.google.com/search?q={query}")
+    elif tell_pattern.search(command):
+        topic = command.replace("tell me about", "").strip()
+        summary = wikipedia.summary(topic, sentences=2)
+        speak(summary)
+    elif time_pattern.search(command):
+        current_time = datetime.datetime.now().strftime("%H:%M")
+        speak(f"The current time is {current_time}")
+    elif "stop" in command:
+        speak("Stopping the program.")
+        exit()
+    else:
+        speak("Sorry, I can't perform that action.")
+
+# Main loop
+while True:
+    command = listen().lower()
+    perform_action(command)
